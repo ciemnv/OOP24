@@ -35,3 +35,52 @@ statement.setString(2, BCrypt.withDefaults().hashToString(12, password.toCharArr
 ```
 
 
+### Tworzenie nowego wątku - extends Thread
+
+### Tworzenie nowego wątku - interfejs Runnable
+```java
+public class Counter implements Runnable {
+    @Override
+    public void run() {
+        for(int i = 0; i < 10; ++i)
+            System.out.print(i);
+    }
+}
+
+Counter counter1 = new Counter();
+Counter counter2 = new Counter();
+
+Thread counterThread1 = new Thread(counter1);
+Thread counterThread2 = new Thread(counter2);
+
+counterThread1.start();
+counterThread2.start();
+```
+
+### Aktualny stan wątku
+```java
+myThread.getState();
+```
+
+### Runnable jako interfejs funkcyjny + executorService (lepszy od executor)
+```java
+int[] ints = new int[100000];
+Arrays.fill(ints, 1);
+
+Thread thread = new Thread(() -> {
+    int sum = 0;
+    for (int num : ints)
+        sum += num;
+    System.out.println(sum);
+});
+thread.start();
+
+ExecutorService executor = Executors.newSingleThreadExecutor();
+executor.submit(() -> {
+    int sum = 0;
+    for (int num : ints)
+        sum += num;
+    System.out.println(sum);
+});
+executor.shutdown();
+```
