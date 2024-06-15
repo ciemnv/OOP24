@@ -2,7 +2,7 @@
 
 ## Kolos2
 
-### Operacje na stringach
+### Obsługa bazy danych
 
 ```java
 import java.sql.*;
