@@ -84,3 +84,5 @@ executor.submit(() -> {
 });
 executor.shutdown();
 ```
+
+### Klasa graphics
