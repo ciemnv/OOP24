@@ -85,4 +85,21 @@ executor.submit(() -> {
 executor.shutdown();
 ```
 
-### Klasa graphics
+### Klasa Graphics
+#### Służy do rysowania obiektów w javie - kształtów, tekstu, obrazów, kolorów i czcionek
+```java
+Graphics graphics = new Graphics();
+int width = 256; //szerokosc
+int height = 200; //wysokosc
+
+BufferedImage histogramImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+Graphics graphics = histogramImage.getGraphics();
+
+ //wypełnianie tła na biało - najpierw ustawiamy kolor, potem coś robimy
+graphics.setColor(Color.WHITE);
+graphics.fillRect(0, 0, width, height);
+
+//Rysowanie słupka od punktu (x1, y2) do punktu (x2, y2)
+graphics.setColor(Color.BLACK);
+graphics.drawLine(x1, y1, x2, y1);
+
