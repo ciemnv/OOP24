@@ -103,3 +103,7 @@ graphics.fillRect(0, 0, width, height);
 graphics.setColor(Color.BLACK);
 graphics.drawLine(x1, y1, x2, y1);
 
+//zapisywanie obrazu do pliku
+File outputFile = new File(outputPath);
+ImageIO.write(histogramImage, "png", outputFile);
+
