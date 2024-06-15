@@ -22,3 +22,9 @@ try (
 } catch (SQLException e) {
 e.printStackTrace(System.err); }
 ```
+### Wstawianie informacji z parametru w bazie danych
+
+```java
+statement = connection.getConnection().prepareStatement("INSERT INTO auth_account(name, password) VALUES (?, ?);");
+statement.setString(1, name);
+```
