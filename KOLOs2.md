@@ -28,3 +28,10 @@ e.printStackTrace(System.err); }
 statement = connection.getConnection().prepareStatement("INSERT INTO auth_account(name, password) VALUES (?, ?);");
 statement.setString(1, name);
 ```
+
+### Ustawianie hasla z pomoca biblioteki BCrypt
+```java
+statement.setString(2, BCrypt.withDefaults().hashToString(12, password.toCharArray()));
+```
+
+
