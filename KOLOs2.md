@@ -108,6 +108,10 @@ File outputFile = new File(outputPath);
 ImageIO.write(histogramImage, "png", outputFile);
 ```
 
+### Link do generowania Spring Boot:
+####https://start.spring.io
+#####Dodajemy dependencies w zaleznosci, jakie potrzebujemy
+
 ### Wygenerowana aplikacja Spring Boot
 ```java
 @SpringBootApplication
