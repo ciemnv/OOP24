@@ -130,3 +130,74 @@ public class ProductController {
     }
 }
 ```
+
+###Mapowanie URL
+```java
+@RestController
+@RequestMapping("product")
+public class ProductController {
+    @GetMapping("hello")
+    String hello() {
+        return "Hello World!";
+    }
+}
+```
+#### Żądanie GET pod adresem http://localhost:8080/product/hello zwróci "Hello World!".
+
+
+### Dodawanie parametrów do żądania:
+```java
+@RestController
+@RequestMapping("product")
+public class ProductController {
+    @GetMapping("hello/{who}")
+    String hello(@PathVariable String who) {
+        return String.format("Hello %s!", who);
+    }
+}
+```
+####Żądanie GET z parametrem http://localhost:8080/product/hello?who=friend zwróci "Hello friend!".
+
+### Dodawanie parametrów w ścieżce URL:
+```java
+@RestController
+@RequestMapping("product")
+public class ProductController {
+    @GetMapping("hello/{who}")
+    String hello(@PathVariable String who) {
+        return String.format("Hello %s!", who);
+    }
+}
+```
+#### Żądanie GET pod adresem http://localhost:8080/product/hello/friend zwróci "Hello friend!".
+
+###Przeciążanie mapowań
+```java
+@GetMapping("")
+List<Product> getItem() {
+    return products;
+}
+
+@GetMapping("{index}")
+Product getItem(@PathVariable int index) {
+    return products.get(index);
+}
+```
+
+###Konfiguracja ekranu błędu
+```java
+@RestController
+public class CustomErrorController implements ErrorController {
+    @RequestMapping("/error")
+    public ResponseEntity<String> handleError(HttpServletResponse response) {
+        Integer status = response.getStatus();
+        HttpStatus httpStatus = HttpStatus.valueOf(status);
+        if (httpStatus == HttpStatus.NOT_FOUND) {
+            return new ResponseEntity<>("Error 404 - not found", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(String.format("Error %d", status), httpStatus);
+        }
+    }
+}
+```
+
