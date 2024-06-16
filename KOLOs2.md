@@ -106,4 +106,27 @@ graphics.drawLine(x1, y1, x2, y1);
 //zapisywanie obrazu do pliku
 File outputFile = new File(outputPath);
 ImageIO.write(histogramImage, "png", outputFile);
+```
 
+### Wygenerowana aplikacja Spring Boot
+```java
+@SpringBootApplication
+public class WebappApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(WebappApplication.class, args);
+    }
+}
+```
+####Aplikacja uruchamia się na lokalnym serwerze pod adresem http://localhost:8080.
+
+###Przykład prostego kontrolera w Spring Boot:
+
+```java
+@RestController
+public class ProductController {
+    @GetMapping
+    String hello() {
+        return "Hello World!";
+    }
+}
+```
