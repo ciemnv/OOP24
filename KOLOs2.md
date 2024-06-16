@@ -113,6 +113,7 @@ ImageIO.write(histogramImage, "png", outputFile);
 #####Dodajemy dependencies w zaleznosci, jakie potrzebujemy
 
 ### Wygenerowana aplikacja Spring Boot
+####Aplikacja uruchamia się na lokalnym serwerze pod adresem http://localhost:8080.
 ```java
 @SpringBootApplication
 public class WebappApplication {
@@ -121,10 +122,8 @@ public class WebappApplication {
     }
 }
 ```
-####Aplikacja uruchamia się na lokalnym serwerze pod adresem http://localhost:8080.
 
-###Przykład prostego kontrolera w Spring Boot:
-
+###Przykład kontrolera w Spring Boot:
 ```java
 @RestController
 public class ProductController {
@@ -136,6 +135,7 @@ public class ProductController {
 ```
 
 ###Mapowanie URL
+#### Żądanie GET pod adresem http://localhost:8080/product/hello zwróci "Hello World!".
 ```java
 @RestController
 @RequestMapping("product")
@@ -146,21 +146,20 @@ public class ProductController {
     }
 }
 ```
-#### Żądanie GET pod adresem http://localhost:8080/product/hello zwróci "Hello World!".
 
 
 ### Dodawanie parametrów do żądania:
-```java
-@RestController
-@RequestMapping("product")
-public class ProductController {
-    @GetMapping("hello/{who}")
-    String hello(@PathVariable String who) {
-        return String.format("Hello %s!", who);
-    }
-}
-```
 ####Żądanie GET z parametrem http://localhost:8080/product/hello?who=friend zwróci "Hello friend!".
+```java
+    @RestController
+    @RequestMapping("product")
+    public class ProductController {
+        @GetMapping("hello/{who}")
+        String hello(@PathVariable String who) {
+            return String.format("Hello %s!", who);
+        }
+    }
+```
 
 ### Dodawanie parametrów w ścieżce URL:
 ```java
@@ -204,4 +203,15 @@ public class CustomErrorController implements ErrorController {
     }
 }
 ```
+
+###wyświetlenie obiektu Rectangle zmapowanego na JSON - kontroler
+```java
+
+    @GetMapping("rect")
+    public Rectangle rectangle() {
+        return new Rectangle(20, 10, 22, 123, "black");
+    }
+```
+
+
 
