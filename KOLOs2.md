@@ -233,7 +233,6 @@ public class CustomErrorController implements ErrorController {
 ```
 
 ### Zwiększanie jasności obrazu
-#### metode clamp mozna zaimportować
 ```java
  private BufferedImage increaseBrightness(BufferedImage image, int value) {
         int width = image.getWidth();
@@ -251,6 +250,11 @@ public class CustomErrorController implements ErrorController {
         }
         return image;
     }
+//pomocnicza metoda clamp
+private int clamp(int i) {
+        return Math.max(0, Math.min(i, 255));
+    }
+
 ```
 
 
