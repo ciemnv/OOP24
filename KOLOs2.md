@@ -109,11 +109,10 @@ ImageIO.write(histogramImage, "png", outputFile);
 ```
 
 ### Link do generowania Spring Boot:
-####https://start.spring.io
-#####Dodajemy dependencies w zaleznosci, jakie potrzebujemy
+#### https://start.spring.io - dodajemy dependencies w zaleznosci, jakie potrzebujemy
 
 ### Wygenerowana aplikacja Spring Boot
-####Aplikacja uruchamia się na lokalnym serwerze pod adresem http://localhost:8080.
+#### Aplikacja uruchamia się na lokalnym serwerze pod adresem http://localhost:8080.
 ```java
 @SpringBootApplication
 public class WebappApplication {
@@ -123,7 +122,7 @@ public class WebappApplication {
 }
 ```
 
-###Przykład kontrolera w Spring Boot:
+### Przykład kontrolera w Spring Boot:
 ```java
 @RestController
 public class ProductController {
@@ -134,7 +133,7 @@ public class ProductController {
 }
 ```
 
-###Mapowanie URL
+### Mapowanie URL
 #### Żądanie GET pod adresem http://localhost:8080/product/hello zwróci "Hello World!".
 ```java
 @RestController
@@ -149,7 +148,7 @@ public class ProductController {
 
 
 ### Dodawanie parametrów do żądania:
-####Żądanie GET z parametrem http://localhost:8080/product/hello?who=friend zwróci "Hello friend!".
+#### Żądanie GET z parametrem http://localhost:8080/product/hello?who=friend zwróci "Hello friend!".
 ```java
     @RestController
     @RequestMapping("product")
@@ -162,6 +161,7 @@ public class ProductController {
 ```
 
 ### Dodawanie parametrów w ścieżce URL:
+#### Żądanie GET pod adresem http://localhost:8080/product/hello/friend zwróci "Hello friend!".
 ```java
 @RestController
 @RequestMapping("product")
@@ -172,9 +172,8 @@ public class ProductController {
     }
 }
 ```
-#### Żądanie GET pod adresem http://localhost:8080/product/hello/friend zwróci "Hello friend!".
 
-###Przeciążanie mapowań
+### Przeciążanie mapowań
 ```java
 @GetMapping("")
 List<Product> getItem() {
@@ -187,7 +186,7 @@ Product getItem(@PathVariable int index) {
 }
 ```
 
-###Konfiguracja ekranu błędu
+### Konfiguracja ekranu błędu
 ```java
 @RestController
 public class CustomErrorController implements ErrorController {
@@ -204,7 +203,7 @@ public class CustomErrorController implements ErrorController {
 }
 ```
 
-###wyświetlenie obiektu Rectangle zmapowanego na JSON - kontroler
+### Wyświetlenie obiektu Rectangle zmapowanego na JSON - kontroler
 ```java
 
     @GetMapping("rect")
