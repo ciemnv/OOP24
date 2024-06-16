@@ -212,5 +212,46 @@ public class CustomErrorController implements ErrorController {
     }
 ```
 
+### Dekodowanie i kodowanie obrazu do base64
+```java
+ @GetMapping("/adjustBrightness")
+    public String adjustBrightness(@RequestParam String base64Image, @RequestParam int brightness) throws IOException {
+        // Dekodowanie obrazu z base64
+        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+        BufferedImage image = ImageIO.read(bis);
+
+        // Zwiększenie jasności obrazu
+        BufferedImage brightenedImage = increaseBrightness(image, brightness);
+
+        // Kodowanie obrazu do base64
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(brightenedImage, "png", bos);
+        byte[] brightenedImageBytes = bos.toByteArray();
+        return Base64.getEncoder().encodeToString(brightenedImageBytes);
+    }
+```
+
+### Zwiększanie jasności obrazu
+#### metode clamp mozna zaimportować
+```java
+ private BufferedImage increaseBrightness(BufferedImage image, int value) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Color color = new Color(image.getRGB(x, y));
+                int r = clamp(color.getRed() + value);
+                int g = clamp(color.getGreen() + value);
+                int b = clamp(color.getBlue() + value);
+                int newColor = new Color(r, g, b).getRGB();
+                image.setRGB(x, y, newColor);
+            }
+        }
+        return image;
+    }
+```
+
 
 
