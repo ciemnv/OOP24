@@ -393,7 +393,7 @@ public void broadcast(String message) {
 //trzeba jeszcze uzupełnić konstruktor ClientHandlera o "this"
 ```
 
-#### Usunięcie zakończonego wątku - do ClientHandlera dodaj metode close(), a do Servera removeHandler;
+### Usunięcie zakończonego wątku - do ClientHandlera dodaj metode close(), a do Servera removeHandler;
 ```java
  private void close() throws IOException {
         socket.close();
@@ -406,5 +406,16 @@ public void broadcast(String message) {
 }
 ```
 
-###
+### Zamknięcie połączenia z serwerem - do klasy Server dodaj:
+```java
+  public void disconnectHandlers() {
+        handlers.forEach(handler -> handler.send("Bye!"));
+        handlers.clear();
+    }
+// a to do maina:
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            server.disconnectHandlers();
+```
+
+
 
