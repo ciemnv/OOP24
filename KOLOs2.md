@@ -417,5 +417,69 @@ public void broadcast(String message) {
             server.disconnectHandlers();
 ```
 
+### Klient łączący się z serwerem i wysyłający wiadomość.
+```java
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Socket socket = new Socket("localhost", 3000);
 
+        InputStream input = socket.getInputStream();
+        OutputStream output = socket.getOutputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        PrintWriter writer = new PrintWriter(output, true);
 
+        //klient wysyla wiadomosc "message"
+        writer.println("message");
+        String result = reader.readLine();
+        System.out.println(result);
+    }
+}
+```
+
+### Wysyłanie pliku z klienta
+```java
+///do ClientHandlera
+public void sendFile(String path) throws IOException {
+    File file = new File(path);
+    FileInputStream fileIn = new FileInputStream(file);
+    DataOutputStream fileOut = new DataOutputStream(socket.getOutputStream());
+
+    byte[] buffer = new byte[64];
+    int count;
+    while ((count = fileIn.read(buffer)) > 0) {
+        fileOut.write(buffer, 0, count);
+    }
+    fileIn.close();
+}
+```
+
+### Przesyłanie pliku przez Serwer
+```java
+//do Server
+public void transferFile(ClientHandler sender, ClientHandler recipient) throws IOException {
+    DataInputStream fileIn = new DataInputStream(sender.getSocket().getInputStream());
+    DataOutputStream fileOut = new DataOutputStream(recipient.getSocket().getOutputStream());
+
+    byte[] buffer = new byte[64];
+    int count;
+    while ((count = fileIn.read(buffer)) > 0) {
+        fileOut.write(buffer, 0, count);
+    }
+}
+```
+
+### Odbiór pliku przez klienta
+```java
+public void receiveFile() throws IOException {
+    File file = new File(System.getProperty("java.io.tmpdir") + "/result.bin");
+    DataInputStream fileIn = new DataInputStream(socket.getInputStream());
+    FileOutputStream fileOut = new FileOutputStream(file);
+
+    byte[] buffer = new byte[64];
+    int count;
+    while ((count = fileIn.read(buffer)) > 0) {
+        fileOut.write(buffer, 0, count);
+    }
+    fileOut.close();
+}
+```
