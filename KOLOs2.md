@@ -257,5 +257,126 @@ private int clamp(int i) {
 
 ```
 
+### Gniazdo serwerowe
+```java
+public class Server {
+    private ServerSocket serverSocket;
+
+    public Server() throws IOException {
+        serverSocket = new ServerSocket(3000);
+    }
+```
+
+### Listen - oczekiwanie na połączenie
+```java
+public void listen() throws IOException {
+        System.out.println("Server started");
+        serverSocket.accept();
+        System.out.println("Client connected");
+    }
+```
+
+### Odebranie wiadomości
+```java
+public void listen() throws IOException {
+    System.out.println("Server started");
+    Socket socket = serverSocket.accept();
+    System.out.println("Client connected");
+
+    InputStream input = socket.getInputStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+    String message;
+    while (true) {
+        message = reader.readLine();
+        System.out.println(message);
+    }
+}
+```
+
+### Zakończenie połączenia
+#### Doklejamy do odbierania wiadomości
+    socket.close();
+    serverSocket.close();
+    System.out.println("Server closed");
+
+### Wysyłanie wiaodomości przez serwer
+#### Serwer może wysłać wiadomość do klienta, używając strumienia wyjściowego OutputStream.
+```java
+public void listen() throws IOException {
+    System.out.println("Server started");
+    Socket socket = serverSocket.accept();
+    System.out.println("Client connected");
+
+    InputStream input = socket.getInputStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+    OutputStream output = socket.getOutputStream();
+    PrintWriter writer = new PrintWriter(output, true);
+
+    String message;
+    writer.println("Hello!");
+    while ((message = reader.readLine()) != null) {
+        writer.println(message);
+    }
+
+    socket.close();
+    serverSocket.close();
+    System.out.println("Server closed");
+}
+```
+
+### Obsługa wielu klientów
+#### Tworzenie wątków dla każdego klienta umożliwia obsługę wielu klientów równocześnie.
+#### Tworzenie wątku obsługującego klienta
+```java
+public class ClientHandler implements Runnable {
+    private final Socket socket;
+    private final BufferedReader reader;
+    private final PrintWriter writer;
+
+    public ClientHandler(Socket socket) throws IOException {
+        this.socket = socket;
+        InputStream input = socket.getInputStream();
+        OutputStream output = socket.getOutputStream();
+        reader = new BufferedReader(new InputStreamReader(input));
+        writer = new PrintWriter(output, true);
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Client connected");
+        String message;
+        try {
+            while ((message = reader.readLine()) != null) {
+                writer.println(message);
+            }
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Client disconnected");
+    }
+}
+```
+### Uruchomienie wątku
+```java
+public class Server {
+    private ServerSocket serverSocket;
+    private ArrayList<ClientHandler> handlers = new ArrayList<>();
+
+    public void listen() throws IOException {
+        System.out.println("Server started");
+        while (true) {
+            Socket socket = serverSocket.accept();
+            ClientHandler handler = new ClientHandler(socket);
+            Thread thread = new Thread(handler);
+            thread.start();
+            handlers.add(handler);
+        }
+    }
+}
+```
+
 
 
