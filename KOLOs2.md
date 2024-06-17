@@ -377,6 +377,34 @@ public class Server {
     }
 }
 ```
+### Komunikacja między klientami
+#### Do ClientHandlera dodajemy jeszcze private final Server server, który dodajemy też w konstruktorze + tworzymy nową metodę send:
+```java
+public void send(String message) {
+        writer.println(message);
+    }
+```
+#### Do pętli w override run() wpisujemy server.broadcast(message) zamiast writera
+```java
+//Metoda broadcast (w klasie serwera)
+public void broadcast(String message) {
+        handlers.forEach(handler -> handler.send(message));
+    }
+//trzeba jeszcze uzupełnić konstruktor ClientHandlera o "this"
+```
 
+#### Usunięcie zakończonego wątku - do ClientHandlera dodaj metode close(), a do Servera removeHandler;
+```java
+ private void close() throws IOException {
+        socket.close();
+        server.removeHandler(this);
+    }
+//użycie - dodaj close() na koniec "try" w metodzie run()
+//metoda do Servera:
+    public void removeHandler(ClientHandler handler) {
+        handlers.remove(handler);
+}
+```
 
+###
 
