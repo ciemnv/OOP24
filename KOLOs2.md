@@ -529,3 +529,20 @@ public void receiveFile() throws IOException {
         }
     }
 ```
+
+### Lista zalogowanych użytkowników
+```java
+//Client Handler:
+//metoda "przeanalizuj wiadomosc"
+    private void parseMessage(String message) {
+        if(message.equals("/online")) {
+            send(server.serverUsersLogins().toString());
+        }
+    }
+//do "try" w Run() dodajemy parseMessage(message);
+
+//Server:
+    public List<String> serverUsersLogins() {
+        //przesyła wartosci key do listy - tworzy nowy obiekt List<> serverUserLogins
+        return clientMap.keySet().stream().toList();
+    }
