@@ -483,3 +483,49 @@ public void receiveFile() throws IOException {
     fileOut.close();
 }
 ```
+
+### Logowanie klienta
+```java
+// w Client / ClientHandler
+    private void authenticate() throws IOException {
+        login = reader.readLine();
+        server.clientLogged(this);
+    }
+
+    public String getLogin() {
+        return login;
+    }
+// w Serwerze
+// do pól:
+    private Map<String, Client> clientMap = new HashMap<>();
+//metoda
+     public void clientLogged(Client loggedClient) {
+        clientMap.put(loggedClient.getLogin(), loggedClient);
+        for(Client currentClient : clients) {
+            if(currentClient != loggedClient) {
+                currentClient.send(String.format("%s zalogował się", loggedClient.getLogin()));
+            }
+        }
+    } 
+```
+
+### Opuszczanie klienta
+```java
+//do ClientHandler
+    private void leave() throws IOException {
+        socket.close();
+        server.clientLeft(this);
+    }
+ 
+//do Server
+    public void clientLeft(Client leavingClient) {
+        clients.remove(leavingClient);
+        try {
+            clientMap.remove(leavingClient.getLogin());
+        } catch (Exception e) {}
+
+        for(Client currentClient : clients) {
+            currentClient.send(String.format("%s wylogował się", leavingClient.getLogin()));
+        }
+    }
+```
