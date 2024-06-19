@@ -710,3 +710,25 @@ public class MonthlyArrayTest {
 #### Można zagnieździć testy, dodając @Nested przed klasą symbolizującą testy (s.33/testy) lub zrobić test będący częścią wspólną wszystkich testów - np. @BeforeEach /All / @AfterEach
 
 
+### Generowanie wykresu na bazie danych z listy Base64
+```java
+public void generate(int index) throws IOException {
+        List<Float> dataLine = data.get(index);
+        BufferedImage image = new BufferedImage(dataLine.size(), 40, BufferedImage.TYPE_INT_ARGB);
+        for(int i = 0; i < dataLine.size(); i++) {
+            int y0 = image.getHeight() / 2;
+            int y = (int) (-dataLine.get(i) + y0);
+            image.setRGB(i, y, 0xffff0000);
+        }
+        //ImageIO.write(image, "png", new File("/tmp/image.png"));
+        System.out.println(encodeBase64(image));
+    }
+
+    private static String encodeBase64(BufferedImage image) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", outputStream);
+        String base64Image = Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        return base64Image;
+    }
+```
+
