@@ -1,8 +1,7 @@
-# Java
+# Java - kolos 2
 
-## Kolos2
 
-### Obsługa bazy danych
+## Obsługa bazy danych
 
 ```java
 import java.sql.*;
@@ -29,11 +28,12 @@ statement = connection.getConnection().prepareStatement("INSERT INTO auth_accoun
 statement.setString(1, name);
 ```
 
-### Ustawianie hasla z pomoca biblioteki BCrypt
+### Hasło z pomoca biblioteki BCrypt
 ```java
 statement.setString(2, BCrypt.withDefaults().hashToString(12, password.toCharArray()));
 ```
 
+## Wątki
 
 ### Tworzenie nowego wątku - extends Thread
 
@@ -107,6 +107,8 @@ graphics.drawLine(x1, y1, x2, y1);
 File outputFile = new File(outputPath);
 ImageIO.write(histogramImage, "png", outputFile);
 ```
+
+## Aplikacja SpringBoot + kontroler + edycja obrazu
 
 ### Link do generowania Spring Boot:
 #### https://start.spring.io - dodajemy dependencies w zaleznosci, jakie potrzebujemy
@@ -256,6 +258,8 @@ private int clamp(int i) {
     }
 
 ```
+
+## Klient i serwer
 
 ### Gniazdo serwerowe
 ```java
@@ -548,6 +552,8 @@ public void receiveFile() throws IOException {
     }
 ```
 
+## Testy
+
 ### Testy - JUnit
 ```java
 <dependency>
@@ -559,7 +565,7 @@ public void receiveFile() throws IOException {
 ```
 
 ### Wykonywanie testów
-#### Sprawdzanie rozmiaru tablicy
+#### Sprawdzanie rozmiaru tablicy: tworzymy specjalną klasę do testowania XxxxTest
 ```java
 public class MonthlyArrayTest {
     @Test
@@ -578,3 +584,129 @@ public class MonthlyArrayTest {
 ```shell
 $ mvn test
 ```
+> Uruchamiają sie wszystkie dostepne testy
+
+### Sprawdzanie metody np. Index:
+```java
+//nasza metoda:
+    public int index(int year, int month) {
+        return (year - beginYear) * 12 + month - beginMonth;
+    }
+
+//nasz test:
+public class MonthlyArrayTest {
+    @Test
+    void index() {
+        MonthlyArray<Object> monthlyArray = new MonthlyArray<>(
+            LocalDate.of(2020, 1, 1),
+            LocalDate.of(2024, 7, 1)
+        );
+
+        int index = monthlyArray.index(2024, 1);
+        assertEquals(48, index);
+    }
+}
+```
+
+### Test rzucania wyjątku:
+
+```java
+public class MonthlyArrayTest {
+    @Test
+    void indexNegative() {
+        MonthlyArray<Object> monthlyArray = new MonthlyArray<>(
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 3, 1)
+        );
+        assertThrows(IndexOutOfBoundsException.class, () -> monthlyArray.index(2023, 12));
+    }
+
+    @Test
+    void indexTooHigh() {
+        MonthlyArray<Object> monthlyArray = new MonthlyArray<>(
+            LocalDate.of(2024, 1, 1),
+            LocalDate.of(2024, 3, 1)
+        );
+        assertThrows(IndexOutOfBoundsException.class, () -> monthlyArray.index(2024, 3));
+    }
+}
+```
+
+### Parametryzacja testów
+#### Aby móc dodać parametry do testów, należy do dependencies dorzucić:
+```java
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-params</artifactId>
+    <version>5.10.2</version>
+    <scope>test</scope>
+</dependency>
+```
+
+### Sprawametryzowany test nieprawidłowej kolejności napisów
+#### Jeśli w konstruktorze dodamy ifa z nieprawidlowa kolejnoscia, ktory rzuca wyjatek, to mozemy wykonac test rzucania tego wyjatku (s.16/temat testy)
+```java
+public class MonthlyArrayTest {
+    @ParameterizedTest
+    @ValueSource(strings = {"2019-01-01", "2014-12-01", "2023-01-31"})
+    void illegalDateOrder(String endDateString) {
+        LocalDate beginDate = LocalDate.of(2023, 2, 1);
+        LocalDate endDate = LocalDate.parse(endDateString);
+
+        assertThrows(IllegalArgumentException.class, () -> new MonthlyArray<>(beginDate, endDate));
+    }
+}
+```
+### Sparametryzowany test - całość s.17-20
+
+### Można użyć typu Arguments w strumieniu zamiast podawac kazdego argumentu osobno
+
+### Generowanie parametrów testu
+#### Można zaprogramować test w ten sposób, żeby określone parametry się same generowały, w przykładzie test programowo generuje parametry dla wszystkich miesięcy między 2010 a 2024 rokiem.
+```java
+public class MonthlyArrayTest {
+    private static Stream<Arguments> allMonthYearIndices() {
+        Stream.Builder<Arguments> builder = Stream.builder();
+        int index = 0;
+        for (int year = 2010; year < 2024; year++) {
+            for (int month = 1; month <= 12; month++) {
+                builder.add(Arguments.arguments(year, month, index++));
+            }
+        }
+        return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource("allMonthYearIndices")
+    void paramAllIndices(int year, int month, int expectedIndex) {
+        MonthlyArray<Object> monthlyArray = new MonthlyArray<>(
+            LocalDate.of(2010, 1, 1),
+            LocalDate.of(2024, 1, 1)
+        );
+        assertEquals(expectedIndex, monthlyArray.index(year, month));
+    }
+}
+```
+
+
+### Parametryzacja testu plikiem csv
+```java
+public class MonthlyArrayTest {
+
+    @ParameterizedTest
+    @CsvFileSource(files = "months.csv", useHeadersInDisplayName = true)
+    void csvIndex(String date, int month, int year, int expectedIndex) {
+        MonthlyArray<Object> monthlyArray = new MonthlyArray<>(
+            LocalDate.of(2010, 1, 1),
+            LocalDate.of(2024, 6, 1)
+        );
+        assertEquals(expectedIndex, monthlyArray.index(year, month));
+    }
+```
+> Test przeprowadzony dla pliku csv z kolumnami Data, Miesiąc, Rok, Index
+> https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources-CsvFileSource
+
+### Zagnieżdżone testy
+#### Można zagnieździć testy, dodając @Nested przed klasą symbolizującą testy (s.33/testy) lub zrobić test będący częścią wspólną wszystkich testów - np. @BeforeEach /All / @AfterEach
+
+
