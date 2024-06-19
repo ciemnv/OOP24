@@ -546,3 +546,35 @@ public void receiveFile() throws IOException {
         //przesyła wartosci key do listy - tworzy nowy obiekt List<> serverUserLogins
         return clientMap.keySet().stream().toList();
     }
+```
+
+### Testy - JUnit
+```java
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>5.10.2</version>
+    <scope>test</scope>
+</dependency>
+```
+
+### Wykonywanie testów
+#### Sprawdzanie rozmiaru tablicy
+```java
+public class MonthlyArrayTest {
+    @Test
+    void arraySize() {
+        MonthlyArray<Object> monthlyArray = new MonthlyArray<>(
+            LocalDate.of(2024, 3, 1),
+            LocalDate.of(2024, 7, 1)
+        );
+
+        int size = monthlyArray.size();
+        assertEquals(4, size);
+    }
+}
+```
+### Uruchomienie testów
+```shell
+$ mvn test
+```
