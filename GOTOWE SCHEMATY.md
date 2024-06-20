@@ -163,7 +163,7 @@ public class ImageServer {
     }
 }
 ```
-### ClientHandler
+#### ClientHandler
 ```java
     private class ClientHandler extends Thread {
         private Socket socket;
@@ -239,7 +239,7 @@ public class ImageServer {
     }
 ```
 
-### Client
+#### Client
 ```java
 import java.io.*;
 import java.net.*;
