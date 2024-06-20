@@ -389,6 +389,7 @@ public void send(String message) {
     }
 ```
 #### Do pętli w override run() wpisujemy server.broadcast(message) zamiast writera
+### Broadcast - rozsyłanie wiadomości między klientami
 ```java
 //Metoda broadcast (w klasie serwera)
 public void broadcast(String message) {
