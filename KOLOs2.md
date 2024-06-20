@@ -41,6 +41,7 @@ e.printStackTrace(System.err); }
 ```java
 statement = connection.getConnection().prepareStatement("INSERT INTO auth_account(name, password) VALUES (?, ?);");
 statement.setString(1, name);
+statement.executeUpdate();
 ```
 
 ### Hasło z pomoca biblioteki BCrypt
