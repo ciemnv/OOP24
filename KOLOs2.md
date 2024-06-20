@@ -354,6 +354,8 @@ public class ClientHandler implements Runnable {
         String message;
         try {
             while ((message = reader.readLine()) != null) {
+            //odczytuje standardowe wejscie i przesyla do serwera 
+ writer przesyla do serwera
                 writer.println(message);
             }
             socket.close();
