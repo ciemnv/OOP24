@@ -2,7 +2,22 @@
 
 
 ## Obsługa bazy danych
+### Przyklad 1 - stworzenie i zapis do bazy danych
+```java
+  Connection connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+        if(connection != null) {
+            String sql = "CREATE TABLE IF NOT EXISTS images (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "path TEXT NOT NULL," +
+                    "size TEXT NOT NULL," +
+                    "delay INTEGER NOT NULL" +
+                    ");"
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+```
 
+
+### Przykład 2 - pobieranie wartości z bazy danych
 ```java
 import java.sql.*;
 try (
