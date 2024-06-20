@@ -1,4 +1,4 @@
-### KOLOS2 - tworzenie aplikacji klient/serwer
+### KOLOS2 - tworzenie aplikacji klient/serwer - klient zleca, a serwer wykonuje
 ####
 Zadanie 1.
 Napisz serwer czatu sieciowego. Serwer powinien:
