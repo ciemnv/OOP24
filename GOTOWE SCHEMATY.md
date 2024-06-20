@@ -48,7 +48,7 @@ public class Client implements Runnable {
 
 }
 ```
-### Serwer
+#### Serwer
 ```java
 public class Server {
     ServerSocket serverSocket;
@@ -78,7 +78,7 @@ public class Server {
 
 }
 ```
-### Main
+#### Main
 ```java
 public class Main {
     public static void main(String[] args) throws IOException {
