@@ -48,5 +48,53 @@ public class Client implements Runnable {
 
 }
 ```
+### Serwer
+```java
+public class Server {
+    ServerSocket serverSocket;
+    private ArrayList<Client> clients = new ArrayList<>();
+
+    public Server() throws IOException {
+        serverSocket = new ServerSocket(3000);
+    }
+
+
+    public void listen() throws IOException {
+        System.out.println("Server started");
+        while (true) {
+            Socket socket = serverSocket.accept();
+            //pozwolenie na dołączenie dowolnej liczbie użytkowników
+            Client client = new Client(socket);
+            Thread thread = new Thread(client);
+            thread.start();
+            clients.add(client);
+        }
+    }
+
+
+    public void broadcast(String message) {
+        clients.forEach(client -> client.send(message));
+    }
+
+}
+```
+### Main
+```java
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Client client = new Client();
+        //klient odczytuje standardowe wejscie
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        //aby klient zadziałał, tworzymy nowy wątek
+        new Thread(client).start();
+
+        while (true) {
+            //klient przesyła standardowe wejscie do serwera
+            client.send(reader.readLine());
+        }
+    }
+}
+```
 
 
