@@ -21,7 +21,7 @@ public class Client implements Runnable {
     private final BufferedReader reader;
     private final PrintWriter writer;
 
-    public Client(Socket socket) throws IOException {
+    public Client() throws IOException {
         this.socket = new Socket("localhost", 2137);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
