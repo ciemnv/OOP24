@@ -341,6 +341,7 @@ public class ClientHandler implements Runnable {
 
     public ClientHandler(Socket socket) throws IOException {
         this.socket = socket;
+        //odczytywanie standardowego wejścia i wyjścia
         InputStream input = socket.getInputStream();
         OutputStream output = socket.getOutputStream();
         reader = new BufferedReader(new InputStreamReader(input));
