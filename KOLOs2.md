@@ -476,12 +476,17 @@ public void sendFile(String path) throws IOException {
 }
 ```
 
-### Przesyłanie pliku przez Serwer
+### Przesyłanie pliku przez Serwer do klienta
 ```java
 //do Server
 public void transferFile(ClientHandler sender, ClientHandler recipient) throws IOException {
     DataInputStream fileIn = new DataInputStream(sender.getSocket().getInputStream());
     DataOutputStream fileOut = new DataOutputStream(recipient.getSocket().getOutputStream());
+
+    //jak mamy rzeczywisty plik "File":
+    //      File blurredFile = new File("my path");
+    //      byte[] blurredFileContent = Files.readAllBytes(blurredFile.toPath());
+    //      dataOutputStream.write(blurredFileContent);
 
     byte[] buffer = new byte[64];
     int count;
