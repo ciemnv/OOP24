@@ -363,7 +363,7 @@ public class ClientHandler implements Runnable {
     }
 }
 ```
-### Uruchomienie wątku
+### Uruchomienie wątku - dowolna liczba użytkowników
 ```java
 public class Server {
     private ServerSocket serverSocket;
