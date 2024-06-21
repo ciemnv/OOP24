@@ -4,6 +4,7 @@
 ## Obsługa bazy danych
 > żeby SQLITE działał trzeba dodać dependencies z mavena:
 > https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+> full tutorial tu jak coś zapomnisz https://www.youtube.com/watch?v=0beocykXUag
 ### Przyklad 1 - stworzenie i zapis do bazy danych
 ```java
   Connection connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
