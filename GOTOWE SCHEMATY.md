@@ -287,8 +287,179 @@ public class ImageClient {
 
             System.out.println("Blurred image received and saved as " + blurredFileName);
 
+
+
+
+
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+```
+
+
+## POWTÓRZENIE:
+### Client Application
+```java
+package client;
+
+import java.io.*;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Scanner;
+
+public class ClientApp {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter username:");
+        String username = scanner.nextLine();
+        System.out.println("Enter path to CSV file:");
+        String filepath = scanner.nextLine();
+
+        sendData(username, filepath);
+    }
+
+    public static void sendData(String name, String filepath) {
+        try (Socket socket = new Socket("localhost", 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+            
+            out.println(name);
+            List<String> lines = Files.readAllLines(Paths.get(filepath));
+            for (String line : lines) {
+                out.println(line);
+                Thread.sleep(2000);
+            }
+            out.println("bye");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Server Application
+```java
+package server;
+
+import databasecreator.Creator;
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Base64;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+public class ServerApp {
+
+    public static void main(String[] args) {
+        Creator.createDatabase();
+
+        try (ServerSocket serverSocket = new ServerSocket(12345)) {
+            System.out.println("Server is listening on port 12345");
+            while (true) {
+                new ClientHandler(serverSocket.accept()).start();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static class ClientHandler extends Thread {
+        private Socket socket;
+
+        public ClientHandler(Socket socket) {
+            this.socket = socket;
+        }
+
+        public void run() {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                String username = in.readLine();
+                String line;
+                int electrodeLine = 0;
+
+                while (!(line = in.readLine()).equals("bye")) {
+                    String base64Plot = createBase64Plot(line, electrodeLine);
+                    insertIntoDatabase(username, electrodeLine, base64Plot);
+                    electrodeLine++;
+                }
+            } catch (IOException | SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        private String createBase64Plot(String data, int line) throws IOException {
+            String[] values = data.split(",");
+            XYSeries series = new XYSeries("EEG Data Line " + line);
+            for (int i = 0; i < values.length; i++) {
+                series.add(i * 2, Double.parseDouble(values[i]));
+            }
+            XYSeriesCollection dataset = new XYSeriesCollection(series);
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "EEG Data Line " + line,
+                    "Time (ms)",
+                    "Amplitude (µV)",
+                    dataset
+            );
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ChartUtils.writeChartAsPNG(baos, chart, 800, 600);
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        }
+
+        private void insertIntoDatabase(String username, int line, String base64Plot) throws SQLException {
+            String url = "jdbc:sqlite:eeg_data.db";
+            String sql = "INSERT INTO eeg_data(username, electrode_line, plot_base64) VALUES(?,?,?)";
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, username);
+                pstmt.setInt(2, line);
+                pstmt.setString(3, base64Plot);
+                pstmt.executeUpdate();
+            }
+        }
+    }
+}
+```
+
+### Database Creator
+```java
+package databasecreator;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Creator {
+    public static void createDatabase() {
+        String url = "jdbc:sqlite:eeg_data.db";
+        String sql = "CREATE TABLE IF NOT EXISTS eeg_data (" +
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                     "username TEXT NOT NULL, " +
+                     "electrode_line INTEGER, " +
+                     "plot_base64 TEXT" +
+                     ");";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("Database created or opened successfully.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
