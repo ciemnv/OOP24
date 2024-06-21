@@ -1,4 +1,4 @@
-![image](https://github.com/ciemnv/OOP24/assets/172888324/3e1f47e8-4feb-4936-a6d4-966c3e0940aa)# Java
+# Java
 https://docs.oracle.com/javase/8/docs/api/
 https://github.com/Kwi4t3k
 https://github.com/mdpiekarz/java_lab_2024
